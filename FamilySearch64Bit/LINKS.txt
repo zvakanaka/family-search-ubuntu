@@ -1,0 +1,20 @@
+INSTALL THESE PACKAGES FIRST:
+http://dave.lyonmania.com/2014/07/21/getting-familysearch-indexing-to-work-in-ubuntu-14-04/
+
+sudo apt-get install libgtk2.0-0:i386 libxtst6:i386 libxtst6:i386 libx11-dev:i386  lib32z1 lib32ncurses5 lib32bz2-1.0 libxi6 libxtst6 libxrender1
+
+
+(in ubuntu 14.04 your path will be different, /usr/lib/jvm/java-1.6.0-openjdk-amd64/bin/)
+http://software.jamezone.org/HOWTO/familysearchindexing.html
+
+
+FOR HELP WITH VIM:
+http://www.radford.edu/~mhtay/CPSC120/VIM_Editor_Commands.htm
+
+
+The FOLLOWING INFORMATION IS FROM:
+http://ubuntuhandbook.org/index.php/2014/02/install-oracle-java-6-7-or-8-ubuntu-14-04/
+
+sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.6.0_21/bin/java" 1
+sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.6.0_21/bin/javac" 1
+sudo update-alternatives --install "/usr/lib/mozilla/plugins/libjavaplugin.so" "mozilla-javaplugin.so" "/usr/lib/jvm/jdk1.6.0_21/jre/lib/i386/libnpjp2.so" 1
