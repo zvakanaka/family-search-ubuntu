@@ -33,6 +33,15 @@ check_input () {
         a*)
             android
             ;;
+        cutf)
+            cutFront
+            ;;
+        cutba)
+            cutBack
+            ;;
+        cutbo)
+            cutBoth
+            ;;
         "vars")
             display_vars
             ;;
@@ -60,6 +69,9 @@ check_input () {
         water*)
             watermark
             ;;
+        "wii")
+            wii
+            ;;
         tag*)
             tagDirectory
             ;;
@@ -68,9 +80,9 @@ check_input () {
             ;;
         *)
             #quick hack, fix later
-            play1
+            #play1
             #add-IF one param, PLAY that one param  
-            #Message="Is this guy speaking English?"
+            Message="Is this guy speaking English?"
             ;;
     esac
 
@@ -107,27 +119,71 @@ android () {
     #setting title
     echo -ne "\033]0;BUSY $promptInput mode:$mode\007"
 
-    ffmpeg -i $arg2 $arg4 -vcodec libx264 -profile:v high -preset fast -b:v $VBR -maxrate $VBR -bufsize 1000k -vf scale=$WIDTH:-1 -threads 0 -acodec aac -strict experimental -b:a $ABR -ac 2 -ab 44100 $arg3
+    if [ -z "$arg3" ]
+    then
+        arg3="${arg2%.*}$mode.${arg2#*.}"
+    fi
 
-    echo -ne "\033]0;DONE $promptInput last mode:$mode\007"
+    ffmpeg -i $arg2 $arg4 -vcodec libx264 -profile:v high -preset fast -b:v $VBR -maxrate $VBR -bufsize 1000k -vf scale=$WIDTH:-1 -threads 0 -acodec aac -strict experimental -b:a $ABR -ac 2 -ab 44100 $arg3
 }
 
-#convert for simple
-simple () {
-    local WIDTH=320
-    local HEIGHT=240
+#ss start second cut, keeps quality
+#$arg2: inputFile $arg4: outputFile $arg3: startSecond 
+cutFront() {
+    local mode="CutFront"
+    echo mode set to $mode
+    if [ -z "$arg4" ]
+    then
+        arg4=$arg3
+        arg3="${arg2%.*}$mode.${arg2#*.}"
+    fi
+    ffmpeg -i $arg2 -ss $arg4 -c copy $arg3
+}
 
+#t seconds terminate, keeps quality
+#$arg2 inputFile $arg3 outputFile $arg4 terminateSecond 
+cutBack() {
+    local mode="CutBack"
+    echo mode set to $mode
+    if [ -z "$arg4" ]
+    then
+        arg4=$arg3
+        arg3="${arg2%.*}$mode.${arg2#*.}"
+    fi
+    ffmpeg -i $arg2 -t $arg4 -acodec copy -vcodec copy -map 0$arg3
+}
+
+#$arg2 inputFile $arg3 outputFile $arg4 startSecond $arg5 terminateSecond 
+cutBoth() {
+    local mode="CutBoth"
+    echo mode set to $mode
+    if [ -z "$arg5" ]
+    then
+        arg5=$arg4
+        arg4=$arg3
+        arg3="${arg2%.*}$mode.${arg2#*.}"
+    fi
+    ffmpeg -i $arg2 -ss $arg4 -t $arg5 -c copy -map 0 $arg3
+}
+
+#convert for wii, first wiimc, then photochannel if possible 
+wii () {
+    local WIDTH=800
+    local HEIGHT=480
+    local QUAL=3
     #new string
     local promptInput=""
-    local mode="SIMPLE"
+    local mode="Wii"
     echo mode set to $mode
 
+    if [ -z "$arg3" ]
+    then
+        arg3="${arg2%.*}$mode.avi"
+    fi
     #setting title
-    echo -ne "\033]0;BUSY $promptInput mode:$mode\007"
+    echo -ne "\033]0;BUSY $promptInput mode:$mode $arg3\007"
 
-    ffmpeg -i $arg2 $arg4 -vcodec libx264 -profile:v high -preset medium -b:v 500k -maxrate 500k -bufsize 1000k -vf scale=$WIDTH:-1 -threads 0 -acodec mp3 -strict experimental -b:a $ABR -ac 1 -ab 44100 $arg3
-
-    echo -ne "\033]0;DONE $promptInput last mode:$mode\007"
+    ffmpeg -i $arg2 $arg4 -vcodec mpeg4 -q $QUAL -preset medium -b:v 500k -vf scale=$WIDTH:-1 -threads 0 -acodec mp3 -strict experimental -b:a $ABR -ac 1 -ab 44100 $arg3
 }
 
 #Removes segment from video and merges into out
@@ -145,8 +201,6 @@ remSeg() {
     #merge them back
     ffmpeg -y -f concat -i TEMP.txt -c copy $arg3 
     rm TEMP.txt TEMP1.mp4 TEMP2.mp4
-
-    echo -ne "\033]0;DONE $arg2 last mode:$mode\007"
 }
 
 #ROTATE clockwise for the moment
@@ -158,8 +212,6 @@ rotate() {
     
     ANGLE="1"
     ffmpeg -i $arg2 -vcodec libx264 -preset slow -crf 0 -vf transpose=$ANGLE -acodec copy $arg3
-
-    echo -ne "\033]0;DONE $arg2 last mode:$mode\007"
 }
 
 #tuna-viDS for nintendo ds homebrew avi video player
@@ -169,12 +221,15 @@ tunaviDS() {
     local promptInput=""
     local mode="TUNAviDS"
     echo mode set to $mode
-
+    if [ -z "$arg3" ]
+    then
+        echo NO ARG3
+        arg3="${arg2%.*}$mode.avi"
+    fi
     #setting title
     echo -ne "\033]0;BUSY $promptInput mode:$mode\007"
 
     ffmpeg -i $arg2 $arg4 -f avi -r 10 -s 256x192 -b:v 192k -bt 64k -vcodec mpeg4 -deinterlace -acodec libmp3lame -ar 32000 -ab 96k -ac 2 $arg3
-    echo -ne "\033]0;DONE $arg2 last mode:$mode\007"
 }
 
 #$arg2 watermarkimage $arg3 inputvid $arg4 output vid
@@ -218,26 +273,15 @@ play () {
     then
         local promptInput=""
         read -p "type something to play:" promptInput
-        arg2=$promptInput
+        arg2="$promptInput"
     fi
 
-    ffplay -framedrop -autoexit -fast -window_title "ffeasy play $arg2" $arg2 $arg3 $arg4
-}
-
-play1 () {
-    if [ -z "$arg1" ]
-    then
-        local promptInput=""
-        read -p "type something to play:" promptInput
-        arg1="$promptInput"
-    fi
-
-    ffplay -framedrop -autoexit -window_title "ffeasy play $arg1" "$arg1"
+    ffplay -framedrop -autoexit -fast -fs -window_title "ffeasy play $arg2" "$arg2" $arg3 $arg4
 }
 
 display_vars () {
-    echo 0 $0 1 $1 2 $2 3 $3
-    echo a1 $arg1 a2 $arg2 a3 $arg3 a4 $arg4
+    echo "0 $0, 1 $1, 2 $2, 3 $3, 4 $4, 5 $5"
+    echo "arg1 $arg1, arg2 $arg2, arg3 $arg3, arg4 $arg4, arg5 $arg5" 
     echo QUAL.... $QUAL
     echo WIDTH... $WIDTH
     echo HEIGHT.. $HEIGHT
