@@ -6,7 +6,8 @@ indexing_amd64
 
 Read the actual file before running.  
 
-How to install:
+ How to install:
+=================
 ctrl+alt+t to open a terminal, paste the following command and hit enter:
    bash Indexing_amd64UbuntuTahr.sh
    
