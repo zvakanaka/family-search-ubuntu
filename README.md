@@ -8,7 +8,7 @@ Read the actual file before running.
 
  How to install:
 =================
-ctrl+alt+t to open a terminal, cd to directory where the cript is, paste the following command and hit enter:
+ctrl+alt+t to open a terminal, cd to directory where the script is, paste the following command and hit enter:
   
    bash Indexing_amd64UbuntuTahr.sh
    
