@@ -8,7 +8,13 @@ Read the actual file before running.
 
  How to install:
 =================
-ctrl+alt+t to open a terminal, cd to directory where the script is, paste the following command and hit enter:
+Paste the following line into a terminal:
+
+wget -qO- https://raw.githubusercontent.com/zvakanaka/family-search-ubuntu/master/FamilySearch64Bit/Indexing_amd64UbuntuTahr.sh | sh
+
+OR 
+
+Open a terminal, cd to directory where the script is, paste the following command and hit enter:
   
    bash Indexing_amd64UbuntuTahr.sh
    
