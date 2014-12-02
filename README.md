@@ -10,12 +10,12 @@ Read the actual file before running.
 =================
 Paste the following line into a terminal:
 
-wget -qO- https://raw.githubusercontent.com/zvakanaka/family-search-ubuntu/master/FamilySearch64Bit/Indexing_amd64UbuntuTahr.sh | sh
+`wget -qO- https://raw.githubusercontent.com/zvakanaka/family-search-ubuntu/master/FamilySearch64Bit/Indexing_amd64UbuntuTahr.sh | sh`
 
 OR 
 
 Open a terminal, cd to directory where the script is, paste the following command and hit enter:
   
-   sh Indexing_amd64UbuntuTahr.sh
+   `sh Indexing_amd64UbuntuTahr.sh`
    
    
