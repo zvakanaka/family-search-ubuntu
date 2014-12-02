@@ -16,6 +16,6 @@ OR
 
 Open a terminal, cd to directory where the script is, paste the following command and hit enter:
   
-   bash Indexing_amd64UbuntuTahr.sh
+   sh Indexing_amd64UbuntuTahr.sh
    
    
