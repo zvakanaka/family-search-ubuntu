@@ -1,3 +1,6 @@
+ # NOTICE
+ The installer has already been updated to work with 64-bit Linux, so this repo is no longer needed. If you are using a newer version of Ubuntu that does not have JRE 6 in its default repos, you can get it [here](http://www.webupd8.org/2012/11/oracle-sun-java-6-installer-available.html).
+ 
  scripts
 ==========
    
